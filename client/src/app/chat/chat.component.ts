@@ -8,6 +8,8 @@ import { User } from './shared/model/user';
 import { SocketService } from './shared/services/socket.service';
 import { DialogUserComponent } from './dialog-user/dialog-user.component';
 import { DialogUserType } from './dialog-user/dialog-user-type';
+import {Select} from "./shared/model/select";
+import {DialogSelectComponent} from "./dialog-select/dialog-select.component";
 
 
 const AVATAR_URL = 'https://api.adorable.io/avatars/285';
@@ -23,7 +25,11 @@ export class ChatComponent implements OnInit, AfterViewInit {
   messages: Message[] = [];
   messageContent: string;
   ioConnection: any;
+  liveConnection: any;
+  nodeConnection: any;
+  selConnection: any;
   dialogRef: MatDialogRef<DialogUserComponent> | null;
+  selectDialogRef: MatDialogRef<DialogSelectComponent> | null;
   defaultDialogUserParams: any = {
     disableClose: true,
     data: {
@@ -76,11 +82,46 @@ export class ChatComponent implements OnInit, AfterViewInit {
   private initIoConnection(): void {
     this.socketService.initSocket();
 
+    this.liveConnection = this.socketService.onLive()
+      .subscribe((live:boolean) => {
+        console.log("Alive: " + live);
+      });
+
+    this.nodeConnection = this.socketService.onNode()
+      .subscribe((node:Object) => {
+          let entry = JSON.parse(node.toString())["entry"];
+          console.log(entry);
+          let m = {};
+          let n = {};
+          n["name"] = entry["name"];
+          n["id"] = entry["id"];
+          n["type"] = entry.isFile ? "File": "Folder";
+          if(entry["properties"] != null) {
+            n["description"] = entry["properties"]["cm:description"];
+          }
+
+          m["node"] = n;
+          m["action"] = Action.NODE;
+          m["from"] = this.user;
+          this.messages.push(m);
+      });
+
     this.ioConnection = this.socketService.onMessage()
       .subscribe((message: Message) => {
         this.messages.push(message);
       });
 
+    this.selConnection = this.socketService.onSelect()
+      .subscribe((select:Select) => {
+        //show user selection;
+        console.log("Got Selection")
+        this.openSelectionPopup({
+          data: {
+            "list": select.list,
+            "title": "Please Select Item"
+          }
+        })
+      });
 
     this.socketService.onEvent(Event.CONNECT)
       .subscribe(() => {
@@ -105,6 +146,18 @@ export class ChatComponent implements OnInit, AfterViewInit {
         dialogType: DialogUserType.EDIT
       }
     });
+  }
+
+  private openSelectionPopup(params): void {
+    this.selectDialogRef = this.dialog.open(DialogSelectComponent, params);
+    this.selectDialogRef.afterClosed().subscribe(response => {
+      if(!response) {
+        return;
+      }
+
+      let message:string = "selectNode:" + response.selectedUUID;
+      this.sendMessage(message);
+    })
   }
 
   private openUserPopup(params): void {

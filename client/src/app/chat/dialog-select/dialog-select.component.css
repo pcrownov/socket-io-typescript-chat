@@ -1,0 +1,23 @@
+.mat-dialog-content {
+    overflow: hidden;
+}
+
+ul {
+  list-style: none;
+}
+
+.dlg-select-item {
+  margin-bottom: 5px;
+  border: 1px solid #CCCCCC;
+  background-color: #DFDFDF;
+  cursor: pointer;
+  padding: 5px 20px;
+  box-shadow: 1px 1px 3px #AAA;
+}
+
+.dlg-select-item.selected {
+  background-color: #AAFFAA;
+  border: 1px inset #CCCCCC;
+  box-shadow: none;
+  cursor: default;
+}

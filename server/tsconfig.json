@@ -4,7 +4,9 @@
     "src/model/*.ts"
   ],
   "compilerOptions": {
-    "noImplicitAny": true,
-    "target": "es5"
+    "noImplicitAny": false, ,
+    "target": "es6",
+    "module": "commonjs",
+    "allowJs": true
   }
 }

@@ -6,10 +6,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChatModule } from './chat/chat.module';
 import { SharedModule } from './shared/shared.module';
+import {DialogSelectComponent} from "./chat/dialog-select/dialog-select.component";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DialogSelectComponent
   ],
   imports: [
     BrowserModule,
@@ -19,6 +21,9 @@ import { SharedModule } from './shared/shared.module';
     SharedModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent,
+    DialogSelectComponent
+  ]
 })
 export class AppModule { }

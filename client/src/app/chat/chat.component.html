@@ -4,8 +4,8 @@
 <div class="chat-container">
   <mat-card class="main-card">
     <mat-list class="chat-list">
-      <mat-list-item *ngFor="let message of messages" [ngClass]="[(message.action === undefined && message.from.id === user.id)? 'chat-list-item': '']">
-        <img mat-list-avatar *ngIf="message.action === undefined" [src]="message.from.avatar">
+      <mat-list-item *ngFor="let message of messages" [ngClass]="[message.action === action.NODE ? 'chat-list-item-node' : ((message.action === undefined && message.from.id === user.id)? 'chat-list-item': '')]">
+        <img mat-list-avatar *ngIf="message.action === undefined || message.action === action.NODE" [src]="message.from.avatar">
         <h4 mat-line *ngIf="message.action === undefined">
           <b>{{message.from.name}}</b>
         </h4>
@@ -18,16 +18,22 @@
         <p mat-line *ngIf="message.action === action.RENAME" class="chat-notification">
           <span> <b>{{message.content.previousUsername}}</b> is now <b>{{message.content.username}}</b> </span>
         </p>
+        <p mat-line *ngIf="message.action === action.NODE" class="chat-node-notification">
+          <a class="node-title" href="{{message.node.href}}" target="_blank">{{message.node.name}}</a>
+          <span class="node-id">{{message.node.id}}</span>
+          <span class="node-description">{{message.node.description}}</span>
+          <span class="node-type">{{message.node.type}}</span>
+        </p>
       </mat-list-item>
     </mat-list>
     <div class="chat-footer-container">
       <mat-icon>message</mat-icon>
       <mat-form-field class="chat-input">
-        <input matInput 
-               #inputMessage 
-               maxlength="140" 
-               placeholder="Type your message" 
-               [(ngModel)]="messageContent" 
+        <input matInput
+               #inputMessage
+               maxlength="140"
+               placeholder="Type your message"
+               [(ngModel)]="messageContent"
                (keyup.enter)="sendMessage(messageContent)">
         <mat-hint align="end">{{inputMessage.value.length}}/140</mat-hint>
       </mat-form-field>

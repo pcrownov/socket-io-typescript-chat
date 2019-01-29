@@ -1,4 +1,5 @@
 .idea/
+*.iml
 
 ## server
 /server/node_modules

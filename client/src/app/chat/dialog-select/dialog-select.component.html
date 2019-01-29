@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>{{params.title}}</h2>
+
+<mat-dialog-content>
+  <ul>
+    <li class="dlg-select-item" *ngFor="let item of params.list" (click)="onItemClick($event, item.uuid)" [ngClass]="{'selected': selectedUUID == item.uuid}">
+      <span>Document Title: {{item.name}}</span>
+      <span>Document UUID: {{item.uuid}}</span>
+    </li>
+  </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions [attr.align]="'end'">
+  <button mat-button mat-dialog-close color="secondary">Cancel</button>
+  <button mat-raised-button color="primary" mat-dialog-close (click)="selectItem()" [disabled]="!isItemSelected()">Select</button>
+</mat-dialog-actions>
