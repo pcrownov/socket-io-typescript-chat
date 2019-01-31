@@ -61,7 +61,7 @@
 
 .chat-list-item-node {
   min-height: 50px;
-  height: auto;
+  height: auto !important;
   margin-top: 5px;
   padding-top: 5px;
   margin-bottom: 5px;

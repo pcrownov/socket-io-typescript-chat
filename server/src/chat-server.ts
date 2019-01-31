@@ -76,7 +76,7 @@ export class ChatServer {
                         return;
                     }
 
-                    if(value.indexOf("*") != 0 || value.lastIndexOf("*") != value.length()) {
+                    if(value.indexOf("*") != 0 || value.lastIndexOf("*") != value.length) {
                         value = "*" + value + "*";
                     }
 
