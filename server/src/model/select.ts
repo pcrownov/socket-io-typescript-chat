@@ -1,3 +1,3 @@
 export class Select {
-    constructor(private list: Array<Object>) {}
+    constructor(private id: String, private list: Array<Object>,) {}
 }

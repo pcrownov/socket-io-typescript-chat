@@ -54,6 +54,8 @@ export class ChatServer {
             console.log('Connected client on port %s.', this.port);
             socket.on('message', (m: Message) => {
                 let content:String = m["content"];
+                let messageId:String = m["id"];
+
                 console.log('[server](message): %s', JSON.stringify(m));
                 //check if message starts with our key
                 if(content != null && content.toLowerCase().indexOf(ChatServer.KEY_SEARCH_CHARACTER) == 0) {
@@ -99,7 +101,7 @@ export class ChatServer {
                     }
 
                     //call search endpoint with body
-                    this.getSearchResults(searchBody)
+                    this.getSearchResults(messageId, searchBody)
                         .then( function(result:Object) {
                             _this.io.emit('select', result);
                         });
@@ -144,7 +146,7 @@ export class ChatServer {
         });
     }
 
-    private getSearchResults(queryBody:Object) {
+    private getSearchResults(messageId:String, queryBody:Object) {
         return new Promise<Object>((resolve, reject) => {
             request.post({"uri": ChatServer.ALFRESCO_BASE_URL + ChatServer.SEARCH_URL_BASE, "json": queryBody }, (error, res, body) => {
                 if(error != null) {
@@ -154,7 +156,6 @@ export class ChatServer {
                 if(body == null || body["list"] == null || body["list"]["entries"] == null) {
                     resolve(null)
                 }
-
 
                 //return search result set to user for choice/verification
                 let selectSet:Array<Object> = new Array<Object>();
@@ -169,7 +170,7 @@ export class ChatServer {
                     selectSet.push(d);
                 }
 
-                let sm:Select = new Select(selectSet);
+                let sm:Select = new Select(messageId, selectSet);
                 resolve(sm);
             });
         });

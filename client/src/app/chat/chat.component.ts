@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
   liveConnection: any;
   nodeConnection: any;
   selConnection: any;
+  lastId: String = null;
   dialogRef: MatDialogRef<DialogUserComponent> | null;
   selectDialogRef: MatDialogRef<DialogSelectComponent> | null;
   defaultDialogUserParams: any = {
@@ -113,6 +114,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
 
     this.selConnection = this.socketService.onSelect()
       .subscribe((select:Select) => {
+        //don't show if it's not for your message
+        if(select.id !== this.lastId) {
+            return;
+        }
         //show user selection;
         console.log("Got Selection")
         this.openSelectionPopup({
@@ -182,11 +187,18 @@ export class ChatComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    this.lastId = this.generateTimestampID();
+
     this.socketService.send({
+      id: this.lastId,
       from: this.user,
       content: message
     });
     this.messageContent = null;
+  }
+
+  private generateTimestampID(): String {
+      return new Date().getTime().toString();
   }
 
   public sendNotification(params: any, action: Action): void {
